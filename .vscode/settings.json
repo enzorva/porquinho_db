@@ -1,0 +1,8 @@
+{
+    "sqldeveloper.format.general.keywordCase": "UPPER",
+    "sqldeveloper.format.indentation.identSpaces": 4,
+    "editor.formatOnSave": true,
+    "cSpell.words": [
+        "VARCHAR"
+    ]
+}
