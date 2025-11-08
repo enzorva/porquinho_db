@@ -1,3 +1,6 @@
+   SET SERVEROUTPUT ON;
+
+
 CREATE OR REPLACE PROCEDURE pr_insert_color (
     p_name IN p_color.name%TYPE,
     p_hex  IN p_color.hex%TYPE
@@ -178,8 +181,10 @@ DELETE FROM p_color
     OR hex = '#0000FF';
 COMMIT;
 
+COMMIT;
+
 SELECT *
-  FROM p_wallet;
+  FROM p_user;
 
 DELETE FROM p_color;
 DELETE FROM p_account_type;

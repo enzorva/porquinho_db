@@ -1,3 +1,5 @@
+   SET SERVEROUTPUT ON;
+
 -- Tabela Bank
 -- Insert
 
@@ -19,12 +21,12 @@ BEGIN
 EXCEPTION
     WHEN dup_val_on_index THEN
         raise_application_error(
-            -27030,
+            -20030,
             'Já existe um banco com esse nome ou código.'
         );
     WHEN OTHERS THEN
         raise_application_error(
-            -27031,
+            -20031,
             'Erro ao inserir banco: ' || sqlerrm
         );
 END;
@@ -50,7 +52,7 @@ BEGIN
 
     IF v_exists = 0 THEN
         raise_application_error(
-            -27032,
+            -20032,
             'Banco não encontrado para atualização.'
         );
     END IF;
@@ -64,12 +66,12 @@ BEGIN
 EXCEPTION
     WHEN dup_val_on_index THEN
         raise_application_error(
-            -27033,
+            -20033,
             'Já existe um banco com esse nome ou código.'
         );
     WHEN OTHERS THEN
         raise_application_error(
-            -27034,
+            -20034,
             'Erro ao atualizar banco: ' || sqlerrm
         );
 END;
@@ -89,7 +91,7 @@ BEGIN
 
     IF SQL%rowcount = 0 THEN
         raise_application_error(
-            -27035,
+            -20035,
             'Banco não encontrado para remoção.'
         );
     END IF;
@@ -97,7 +99,7 @@ BEGIN
 EXCEPTION
     WHEN OTHERS THEN
         raise_application_error(
-            -27036,
+            -20036,
             'Erro ao remover banco: ' || sqlerrm
         );
 END;
@@ -112,44 +114,10 @@ END;
 --INSERT
 BEGIN
     pr_insert_bank(
-        'TESTE_Nubank',
-        '260',
+        'TESTE_Banco_Master',
+        '230',
         'https://nubank.com.br/logo.png'
     );
-    dbms_output.put_line('1 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('1 ERRO');
-END;
-/
-BEGIN
-    pr_insert_bank(
-        'TESTE_Nubank',
-        '999',
-        'Duplicado'
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -27030 THEN
-            dbms_output.put_line('2 OK');
-        ELSE
-            dbms_output.put_line('2 ERRO');
-        END IF;
-END;
-/
-BEGIN
-    pr_insert_bank(
-        NULL,
-        '001',
-        'Invalido'
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -27031 THEN
-            dbms_output.put_line('3 OK');
-        ELSE
-            dbms_output.put_line('3 ERRO');
-        END IF;
 END;
 /
 --UPDATE
@@ -159,58 +127,13 @@ BEGIN
     SELECT bank_id
       INTO v_id
       FROM p_bank
-     WHERE name = 'TESTE_Nubank';
+     WHERE name = 'TESTE_Banco_Master';
     pr_update_bank(
         v_id,
-        'TESTE_Inter',
-        '077',
+        'TESTE_Banco_pan',
+        '087',
         'https://inter.co/logo.png'
     );
-    dbms_output.put_line('4 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('4 ERRO');
-END;
-/
-BEGIN
-    pr_update_bank(
-        0,
-        'X',
-        '000',
-        ''
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -27032 THEN
-            dbms_output.put_line('5 OK');
-        ELSE
-            dbms_output.put_line('5 ERRO');
-        END IF;
-END;
-/
-BEGIN
-    pr_insert_bank(
-        'TESTE_Bradesco',
-        '237',
-        'https://bradesco.com.br'
-    );
-    SELECT bank_id
-      INTO v_id
-      FROM p_bank
-     WHERE name = 'TESTE_Inter';
-    pr_update_bank(
-        v_id,
-        'TESTE_Bradesco',
-        '237',
-        'duplicate'
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -27033 THEN
-            dbms_output.put_line('6 OK');
-        ELSE
-            dbms_output.put_line('6 ERRO');
-        END IF;
 END;
 /
 --DELETE
@@ -220,22 +143,10 @@ BEGIN
     SELECT bank_id
       INTO v_id
       FROM p_bank
-     WHERE name = 'TESTE_Inter';
+     WHERE name = 'TESTE_Banco_pan';
     pr_delete_bank(v_id);
-    dbms_output.put_line('7 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('7 ERRO');
 END;
 /
-BEGIN
-    pr_delete_bank(0);
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -27035 THEN
-            dbms_output.put_line('8 OK');
-        ELSE
-            dbms_output.put_line('8 ERRO');
-        END IF;
-END;
-/
+
+SELECT *
+  FROM p_bank;

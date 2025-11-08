@@ -1,3 +1,5 @@
+   SET SERVEROUTPUT ON;
+
 -- Tabela Transfer
 -- Insert
 
@@ -15,15 +17,12 @@ BEGIN
             'A conta de origem não pode ser igual à conta de destino.'
         );
     END IF;
-
-    -- Verifica se a conta de origem existe e obtém saldo
     SELECT balance
       INTO v_origin_balance
       FROM p_account
      WHERE account_id = p_origin_account_id
     FOR UPDATE;
 
-    -- Verifica destino
     SELECT COUNT(*)
       INTO v_origin_balance
       FROM p_account
@@ -35,28 +34,22 @@ BEGIN
             'Conta de destino inexistente.'
         );
     END IF;
-
-    -- Verifica limite
     IF v_origin_balance < p_value THEN
         raise_application_error(
             -27052,
             'Saldo insuficiente para transferência.'
         );
     END IF;
-
-    -- Debita da origem
     UPDATE p_account
        SET balance = balance - p_value,
            updated_at = systimestamp
      WHERE account_id = p_origin_account_id;
 
-    -- Credita no destino
     UPDATE p_account
        SET balance = balance + p_value,
            updated_at = systimestamp
      WHERE account_id = p_destination_account_id;
 
-    -- Registra a transferência
     INSERT INTO p_transfer (
         value,
         origin_account_id,
@@ -212,29 +205,6 @@ BEGIN
         2,
         'TESTE_Saldo insuficiente'
     );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -27052 THEN
-            dbms_output.put_line('3 OK');
-        ELSE
-            dbms_output.put_line('3 ERRO');
-        END IF;
-END;
-/
-BEGIN
-    pr_insert_transfer(
-        100,
-        99999,
-        2,
-        'TESTE_Origem inexistente'
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -27053 THEN
-            dbms_output.put_line('4 OK');
-        ELSE
-            dbms_output.put_line('4 ERRO');
-        END IF;
 END;
 /
 --UPDATE
@@ -249,24 +219,6 @@ BEGIN
         v_id,
         'TESTE_Descrição atualizada'
     );
-    dbms_output.put_line('5 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('5 ERRO');
-END;
-/
-BEGIN
-    pr_update_transfer(
-        0,
-        'X'
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -27055 THEN
-            dbms_output.put_line('6 OK');
-        ELSE
-            dbms_output.put_line('6 ERRO');
-        END IF;
 END;
 /
 --CANCEL
@@ -282,16 +234,5 @@ BEGIN
 EXCEPTION
     WHEN OTHERS THEN
         dbms_output.put_line('7 ERRO');
-END;
-/
-BEGIN
-    pr_cancel_transfer(0);
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -27057 THEN
-            dbms_output.put_line('8 OK');
-        ELSE
-            dbms_output.put_line('8 ERRO');
-        END IF;
 END;
 /

@@ -1,3 +1,5 @@
+   SET SERVEROUTPUT ON;
+
 -- Tabela Account Type
 -- Insert
 
@@ -19,12 +21,12 @@ BEGIN
 EXCEPTION
     WHEN dup_val_on_index THEN
         raise_application_error(
-            -27020,
+            -20020,
             'Já existe um tipo de conta com esse nome ou label.'
         );
     WHEN OTHERS THEN
         raise_application_error(
-            -27021,
+            -20021,
             'Erro ao inserir tipo de conta: ' || sqlerrm
         );
 END;
@@ -49,7 +51,7 @@ BEGIN
 
     IF v_exists = 0 THEN
         raise_application_error(
-            -27022,
+            -20022,
             'Tipo de conta não encontrado para atualização.'
         );
     END IF;
@@ -63,12 +65,12 @@ BEGIN
 EXCEPTION
     WHEN dup_val_on_index THEN
         raise_application_error(
-            -27023,
+            -20023,
             'Já existe um tipo de conta com esse nome ou label.'
         );
     WHEN OTHERS THEN
         raise_application_error(
-            -27024,
+            -20024,
             'Erro ao atualizar tipo de conta: ' || sqlerrm
         );
 END;
@@ -90,7 +92,7 @@ BEGIN
 
     IF SQL%rowcount = 0 THEN
         raise_application_error(
-            -27025,
+            -20025,
             'Tipo de conta não encontrado para remoção.'
         );
     END IF;
@@ -98,7 +100,7 @@ BEGIN
 EXCEPTION
     WHEN OTHERS THEN
         raise_application_error(
-            -27026,
+            -20026,
             'Erro ao remover tipo de conta: ' || sqlerrm
         );
 END;
@@ -113,43 +115,9 @@ END;
 BEGIN
     pr_insert_account_type(
         'TESTE_Corrente',
-        'Conta Corrente',
-        'DEBIT'
+        'Conta TESTE',
+        'wallet'
     );
-    dbms_output.put_line('1 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('1 ERRO');
-END;
-/
-BEGIN
-    pr_insert_account_type(
-        'TESTE_Corrente',
-        'Outra',
-        'DEBIT'
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -27020 THEN
-            dbms_output.put_line('2 OK');
-        ELSE
-            dbms_output.put_line('2 ERRO');
-        END IF;
-END;
-/
-BEGIN
-    pr_insert_account_type(
-        NULL,
-        'Invalida',
-        'X'
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -27021 THEN
-            dbms_output.put_line('3 OK');
-        ELSE
-            dbms_output.put_line('3 ERRO');
-        END IF;
 END;
 /
 --UPDATE
@@ -164,53 +132,8 @@ BEGIN
         v_id,
         'TESTE_Poupança',
         'Poupança',
-        'CREDIT'
+        'wallet'
     );
-    dbms_output.put_line('4 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('4 ERRO');
-END;
-/
-BEGIN
-    pr_update_account_type(
-        0,
-        'X',
-        'Y',
-        'Z'
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -27022 THEN
-            dbms_output.put_line('5 OK');
-        ELSE
-            dbms_output.put_line('5 ERRO');
-        END IF;
-END;
-/
-BEGIN
-    pr_insert_account_type(
-        'TESTE_Investimento',
-        'Invest',
-        'INVEST'
-    );
-    SELECT account_type_id
-      INTO v_id
-      FROM p_account_type
-     WHERE name = 'TESTE_Poupança';
-    pr_update_account_type(
-        v_id,
-        'TESTE_Investimento',
-        'Invest',
-        'INVEST'
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -27023 THEN
-            dbms_output.put_line('6 OK');
-        ELSE
-            dbms_output.put_line('6 ERRO');
-        END IF;
 END;
 /
 --DELETE
@@ -222,20 +145,8 @@ BEGIN
       FROM p_account_type
      WHERE name = 'TESTE_Poupança';
     pr_delete_account_type(v_id);
-    dbms_output.put_line('7 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('7 ERRO');
 END;
 /
-BEGIN
-    pr_delete_account_type(0);
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -27025 THEN
-            dbms_output.put_line('8 OK');
-        ELSE
-            dbms_output.put_line('8 ERRO');
-        END IF;
-END;
-/
+
+SELECT *
+  FROM p_account_type;

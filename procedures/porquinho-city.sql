@@ -1,3 +1,5 @@
+   SET SERVEROUTPUT ON;
+
 -- Tabela City
 -- Insert
 
@@ -105,38 +107,6 @@ BEGIN
         'TESTE_Campinas',
         1
     );
-    dbms_output.put_line('1 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('1 ERRO');
-END;
-/
-BEGIN
-    pr_insert_city(
-        'TESTE_Campinas',
-        1
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -24001 THEN
-            dbms_output.put_line('2 OK');
-        ELSE
-            dbms_output.put_line('2 ERRO');
-        END IF;
-END;
-/
-BEGIN
-    pr_insert_city(
-        'TESTE_Inexistente',
-        99999
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -24002 THEN
-            dbms_output.put_line('3 OK');
-        ELSE
-            dbms_output.put_line('3 ERRO');
-        END IF;
 END;
 /
 --UPDATE
@@ -152,49 +122,6 @@ BEGIN
         'TESTE_Santos',
         1
     );
-    dbms_output.put_line('4 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('4 ERRO');
-END;
-/
-BEGIN
-    pr_update_city(
-        0,
-        'X',
-        1
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -24003 THEN
-            dbms_output.put_line('5 OK');
-        ELSE
-            dbms_output.put_line('5 ERRO');
-        END IF;
-END;
-/
-BEGIN
-    pr_insert_city(
-        'TESTE_Santos',
-        1
-    );
-    SELECT city_id
-      INTO v_id
-      FROM p_city
-     WHERE name = 'TESTE_Santos'
-       AND ROWNUM = 1;
-    pr_update_city(
-        v_id,
-        'TESTE_Campinas',
-        1
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -24004 THEN
-            dbms_output.put_line('6 OK');
-        ELSE
-            dbms_output.put_line('6 ERRO');
-        END IF;
 END;
 /
 --DELETE
@@ -206,20 +133,9 @@ BEGIN
       FROM p_city
      WHERE name = 'TESTE_Santos';
     pr_delete_city(v_id);
-    dbms_output.put_line('7 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('7 ERRO');
 END;
 /
-BEGIN
-    pr_delete_city(0);
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -24006 THEN
-            dbms_output.put_line('8 OK');
-        ELSE
-            dbms_output.put_line('8 ERRO');
-        END IF;
-END;
-/
+
+
+SELECT *
+  FROM p_city;

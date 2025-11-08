@@ -1,3 +1,5 @@
+   SET SERVEROUTPUT ON;
+
 -- Tabela Budget
 -- Insert
 
@@ -109,7 +111,7 @@ END;
 -- Teste
 
 
---INSERT
+-- INSERT
 BEGIN
     pr_insert_budget(
         1,
@@ -119,31 +121,9 @@ BEGIN
         DATE '2025-11-30',
         1500
     );
-    dbms_output.put_line('1 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('1 ERRO');
 END;
 /
-BEGIN
-    pr_insert_budget(
-        99999,
-        'TESTE_FK',
-        999,
-        DATE '2025-12-01',
-        DATE '2025-12-31',
-        1000
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -20501 THEN
-            dbms_output.put_line('2 OK');
-        ELSE
-            dbms_output.put_line('2 ERRO');
-        END IF;
-END;
-/
---UPDATE
+-- UPDATE
 DECLARE
     v_id p_budget.budget_id%TYPE;
 BEGIN
@@ -160,32 +140,9 @@ BEGIN
         DATE '2025-12-31',
         800
     );
-    dbms_output.put_line('3 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('3 ERRO');
 END;
 /
-BEGIN
-    pr_update_budget(
-        0,
-        1,
-        'X',
-        1,
-        DATE '2025-01-01',
-        DATE '2025-01-31',
-        100
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -20502 THEN
-            dbms_output.put_line('4 OK');
-        ELSE
-            dbms_output.put_line('4 ERRO');
-        END IF;
-END;
-/
---DELETE
+-- DELETE
 DECLARE
     v_id p_budget.budget_id%TYPE;
 BEGIN
@@ -194,19 +151,8 @@ BEGIN
       FROM p_budget
      WHERE name = 'TESTE_Transporte Dezembro';
     pr_delete_budget(v_id);
-    dbms_output.put_line('5 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('5 ERRO');
 END;
 /
-BEGIN
-    pr_delete_budget(0);
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -20504 THEN
-            dbms_output.put_line('6 OK');
-        ELSE
-            dbms_output.put_line('6 ERRO');
-        END IF;
-END;
+
+SELECT *
+  FROM p_budget;

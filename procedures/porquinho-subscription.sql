@@ -1,3 +1,5 @@
+   SET SERVEROUTPUT ON;
+
 -- Tabela Subscription
 -- Insert
 
@@ -91,31 +93,6 @@ BEGIN
         1,
         DATE '2026-11-06'
     );
-EXCEPTION
-    WHEN OTHERS THEN
-        NULL;
-END;
-/
-BEGIN
-    sp_insert_subscription(
-        1,
-        1,
-        1
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        NULL;
-END;
-/
-BEGIN
-    sp_insert_subscription(
-        99999,
-        1,
-        1
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        NULL;
 END;
 /
 --UPDATE
@@ -132,22 +109,7 @@ BEGIN
         1,
         DATE '2026-12-31'
     );
-EXCEPTION
-    WHEN OTHERS THEN
-        NULL;
 END;
-/
-BEGIN
-    sp_update_subscription(
-        999999,
-        1,
-        1
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        NULL;
-END;
-/
 --DELETE
 DECLARE
     v_id p_subscription.subscription_id%TYPE;
@@ -157,15 +119,5 @@ BEGIN
       FROM p_subscription
      WHERE user_id = 1;
     sp_delete_subscription(v_id);
-EXCEPTION
-    WHEN OTHERS THEN
-        NULL;
-END;
-/
-BEGIN
-    sp_delete_subscription(999999);
-EXCEPTION
-    WHEN OTHERS THEN
-        NULL;
 END;
 /

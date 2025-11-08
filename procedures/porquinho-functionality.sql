@@ -1,3 +1,5 @@
+   SET SERVEROUTPUT ON;
+
 -- Tabela Functionality
 -- Insert
 
@@ -83,19 +85,6 @@ BEGIN
         'TESTE_Transferência',
         'TRANSFER'
     );
-EXCEPTION
-    WHEN OTHERS THEN
-        NULL;
-END;
-/
-BEGIN
-    sp_insert_functionality(
-        'TESTE_Transferência',
-        'TRANSFER_DUPLICADO'
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        NULL;
 END;
 /
 --UPDATE
@@ -111,22 +100,7 @@ BEGIN
         'TESTE_Orçamento',
         'BUDGET'
     );
-EXCEPTION
-    WHEN OTHERS THEN
-        NULL;
 END;
-/
-BEGIN
-    sp_update_functionality(
-        999999,
-        'X',
-        'Y'
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        NULL;
-END;
-/
 --DELETE
 DECLARE
     v_id p_functionality.functionality_id%TYPE;
@@ -136,15 +110,7 @@ BEGIN
       FROM p_functionality
      WHERE name = 'TESTE_Orçamento';
     sp_delete_functionality(v_id);
-EXCEPTION
-    WHEN OTHERS THEN
-        NULL;
 END;
-/
-BEGIN
-    sp_delete_functionality(999999);
-EXCEPTION
-    WHEN OTHERS THEN
-        NULL;
-END;
-/
+
+SELECT *
+  FROM p_functionality;

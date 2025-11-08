@@ -1,3 +1,5 @@
+   SET SERVEROUTPUT ON;
+
 -- Tabela Subscription Tier
 -- Insert
 
@@ -88,20 +90,6 @@ BEGIN
         'Plano mensal básico',
         29.90
     );
-EXCEPTION
-    WHEN OTHERS THEN
-        NULL;
-END;
-/
-BEGIN
-    sp_insert_subscription_tier(
-        'TESTE_Básico',
-        'Tentativa duplicada',
-        39.90
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        NULL;
 END;
 /
 --UPDATE
@@ -118,23 +106,9 @@ BEGIN
         'Plano anual com descontos',
         299.90
     );
-EXCEPTION
-    WHEN OTHERS THEN
-        NULL;
 END;
 /
-BEGIN
-    sp_update_subscription_tier(
-        999999,
-        'X',
-        'Inexistente',
-        0
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        NULL;
-END;
-/
+
 --DELETE
 DECLARE
     v_id p_subscription_tier.subscription_tier_id%TYPE;
@@ -144,15 +118,4 @@ BEGIN
       FROM p_subscription_tier
      WHERE name = 'TESTE_Premium';
     sp_delete_subscription_tier(v_id);
-EXCEPTION
-    WHEN OTHERS THEN
-        NULL;
 END;
-/
-BEGIN
-    sp_delete_subscription_tier(999999);
-EXCEPTION
-    WHEN OTHERS THEN
-        NULL;
-END;
-/

@@ -1,11 +1,12 @@
--- Tabela Account
--- Insert
+   SET SERVEROUTPUT ON;
+-- Tabela p_account
 
+-- Insert
 CREATE OR REPLACE PROCEDURE pr_insert_account (
     p_wallet_id       IN p_account.wallet_id%TYPE,
     p_name            IN p_account.name%TYPE,
     p_account_type_id IN p_account.account_type_id%TYPE,
-    p_bank_id         IN p_account.bank_id%TYPE,
+    p_bank_id         IN p_account.bank_id%TYPE DEFAULT NULL,
     p_balance         IN p_account.balance%TYPE DEFAULT 0,
     p_overdraft       IN p_account.overdraft%TYPE DEFAULT 0,
     p_color_id        IN p_account.color_id%TYPE,
@@ -20,7 +21,8 @@ BEGIN
         balance,
         overdraft,
         color_id,
-        account_icon_id
+        account_icon_id,
+        created_at
     ) VALUES ( p_wallet_id,
                p_name,
                p_account_type_id,
@@ -28,28 +30,26 @@ BEGIN
                p_balance,
                p_overdraft,
                p_color_id,
-               p_account_icon_id );
+               p_account_icon_id,
+               systimestamp );
 
     COMMIT;
 EXCEPTION
     WHEN dup_val_on_index THEN
         raise_application_error(
-            -27040,
+            -20040,
             'Já existe uma conta com esse nome nesta carteira.'
         );
     WHEN OTHERS THEN
         raise_application_error(
-            -27041,
+            -20041,
             'Erro ao inserir conta: ' || sqlerrm
         );
-END;
+END pr_insert_account;
 /
 
-
 -- ======================================================================
-
 -- Update
-
 CREATE OR REPLACE PROCEDURE pr_update_account (
     p_account_id      IN p_account.account_id%TYPE,
     p_name            IN p_account.name%TYPE,
@@ -69,7 +69,7 @@ BEGIN
 
     IF v_exists = 0 THEN
         raise_application_error(
-            -27042,
+            -20042,
             'Conta não encontrada para atualização.'
         );
     END IF;
@@ -88,22 +88,20 @@ BEGIN
 EXCEPTION
     WHEN dup_val_on_index THEN
         raise_application_error(
-            -27043,
+            -20043,
             'Já existe uma conta com esse nome nesta carteira.'
         );
     WHEN OTHERS THEN
         raise_application_error(
-            -27044,
+            -20044,
             'Erro ao atualizar conta: ' || sqlerrm
         );
-END;
+END pr_update_account;
 /
 
 
 -- ======================================================================
-
 -- Delete
-
 CREATE OR REPLACE PROCEDURE pr_delete_account (
     p_account_id IN p_account.account_id%TYPE
 ) AS
@@ -113,7 +111,7 @@ BEGIN
 
     IF SQL%rowcount = 0 THEN
         raise_application_error(
-            -27045,
+            -20045,
             'Conta não encontrada para remoção.'
         );
     END IF;
@@ -122,156 +120,74 @@ EXCEPTION
     WHEN OTHERS THEN
         -- Possível FK: transações dependentes
         raise_application_error(
-            -27046,
+            -20046,
             'Erro ao remover conta: ' || sqlerrm
         );
-END;
+END pr_delete_account;
 /
 
 
--- ======================================================================
 
--- Teste
-
---INSERT
+-- Testes
+-- INSERT
 BEGIN
     pr_insert_account(
-        1,
-        'TESTE_NuConta',
-        1,
-        1,
-        5000,
-        1000,
-        1,
-        1
+        p_wallet_id       => 1,
+        p_name            => 'Conta Teste PicPay',
+        p_account_type_id => 8,
+        p_bank_id         => 10,
+        p_balance         => 1500.50,
+        p_overdraft       => 0,
+        p_color_id        => 5,
+        p_account_icon_id => 4
     );
-    dbms_output.put_line('1 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('1 ERRO');
+    dbms_output.put_line('Conta inserida com sucesso!');
 END;
 /
-BEGIN
-    pr_insert_account(
-        1,
-        'TESTE_NuConta',
-        1,
-        1
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -27040 THEN
-            dbms_output.put_line('2 OK');
-        ELSE
-            dbms_output.put_line('2 ERRO');
-        END IF;
-END;
+
+SELECT *
+  FROM p_account
+ WHERE name = 'Conta Teste PicPay';
 /
-BEGIN
-    pr_insert_account(
-        99999,
-        'TESTE_FK',
-        1,
-        1
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -27041 THEN
-            dbms_output.put_line('3 OK');
-        ELSE
-            dbms_output.put_line('3 ERRO');
-        END IF;
-END;
-/
---UPDATE
+
+
+-- UPDATE
 DECLARE
-    v_id p_account.account_id%TYPE;
+    v_account_id p_account.account_id%TYPE;
 BEGIN
     SELECT account_id
-      INTO v_id
+      INTO v_account_id
       FROM p_account
-     WHERE name = 'TESTE_NuConta';
+     WHERE name = 'Conta Teste PicPay';
+
     pr_update_account(
-        v_id,
-        'TESTE_Inter',
-        2,
-        2,
-        8000,
-        2000,
-        2,
-        2
+        p_account_id      => v_account_id,
+        p_name            => 'Conta Teste PicPay Atualizada',
+        p_account_type_id => 8,
+        p_bank_id         => 10,
+        p_balance         => 2500.75,
+        p_overdraft       => 1,
+        p_color_id        => 6,
+        p_account_icon_id => 5
     );
-    dbms_output.put_line('4 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('4 ERRO');
+    dbms_output.put_line('Conta atualizada com sucesso!');
 END;
 /
-BEGIN
-    pr_update_account(
-        0,
-        'X',
-        1,
-        1
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -27042 THEN
-            dbms_output.put_line('5 OK');
-        ELSE
-            dbms_output.put_line('5 ERRO');
-        END IF;
-END;
-/
-BEGIN
-    pr_insert_account(
-        1,
-        'TESTE_Reserva',
-        1,
-        1
-    );
-    SELECT account_id
-      INTO v_id
-      FROM p_account
-     WHERE name = 'TESTE_Inter';
-    pr_update_account(
-        v_id,
-        'TESTE_Reserva',
-        1,
-        1
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -27043 THEN
-            dbms_output.put_line('6 OK');
-        ELSE
-            dbms_output.put_line('6 ERRO');
-        END IF;
-END;
-/
---DELETE
+
+-- DELETE
 DECLARE
-    v_id p_account.account_id%TYPE;
+    v_account_id p_account.account_id%TYPE;
 BEGIN
     SELECT account_id
-      INTO v_id
+      INTO v_account_id
       FROM p_account
-     WHERE name = 'TESTE_Inter';
-    pr_delete_account(v_id);
-    dbms_output.put_line('7 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('7 ERRO');
+     WHERE name = 'Conta Teste PicPay Atualizada';
+
+    pr_delete_account(p_account_id => v_account_id);
+    dbms_output.put_line('Conta removida com sucesso!');
 END;
 /
-BEGIN
-    pr_delete_account(0);
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -27045 THEN
-            dbms_output.put_line('8 OK');
-        ELSE
-            dbms_output.put_line('8 ERRO');
-        END IF;
-END;
-/
+
+
+SELECT *
+  FROM p_account;

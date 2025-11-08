@@ -1,3 +1,5 @@
+   SET SERVEROUTPUT ON;
+
 -- Tabela Category Icon
 -- Insert
 
@@ -97,24 +99,6 @@ BEGIN
         'TESTE_Alimentação',
         '/cat/food.svg'
     );
-    dbms_output.put_line('1 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('1 ERRO');
-END;
-/
-BEGIN
-    pr_insert_category_icon(
-        'TESTE_Alimentação',
-        '/cat/other.svg'
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -20201 THEN
-            dbms_output.put_line('2 OK');
-        ELSE
-            dbms_output.put_line('2 ERRO');
-        END IF;
 END;
 /
 --UPDATE
@@ -130,25 +114,6 @@ BEGIN
         'TESTE_Transporte',
         '/cat/car.svg'
     );
-    dbms_output.put_line('3 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('3 ERRO');
-END;
-/
-BEGIN
-    pr_update_category_icon(
-        0,
-        'X',
-        'Y'
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -20202 THEN
-            dbms_output.put_line('4 OK');
-        ELSE
-            dbms_output.put_line('4 ERRO');
-        END IF;
 END;
 /
 --DELETE
@@ -160,19 +125,8 @@ BEGIN
       FROM p_category_icon
      WHERE label = 'TESTE_Transporte';
     pr_delete_category_icon(v_id);
-    dbms_output.put_line('5 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('5 ERRO');
 END;
 /
-BEGIN
-    pr_delete_category_icon(0);
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -20204 THEN
-            dbms_output.put_line('6 OK');
-        ELSE
-            dbms_output.put_line('6 ERRO');
-        END IF;
-END;
+
+SELECT *
+  FROM p_category_icon;

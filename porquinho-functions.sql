@@ -106,3 +106,19 @@ BEGIN
     END IF;
     RETURN 'VÁLIDO';
 END;
+
+SELECT fn_validate_transaction(
+    1,
+    50,
+    1,
+    1
+) AS resultado
+  FROM dual;
+
+SELECT fn_validate_transaction(
+    1,
+    0,     -- valor inválido
+    1,
+    1
+) AS resultado
+  FROM dual;

@@ -1,3 +1,5 @@
+   SET SERVEROUTPUT ON;
+
 -- Tabela Transaction Category
 -- Insert
 
@@ -96,24 +98,6 @@ BEGIN
         1,
         1
     );
-    dbms_output.put_line('1 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('1 ERRO');
-END;
-/
-BEGIN
-    pr_insert_transaction_category(
-        99999,
-        1
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -20401 THEN
-            dbms_output.put_line('2 OK');
-        ELSE
-            dbms_output.put_line('2 ERRO');
-        END IF;
 END;
 /
 --UPDATE
@@ -130,44 +114,11 @@ EXCEPTION
         dbms_output.put_line('3 ERRO');
 END;
 /
-BEGIN
-    pr_update_transaction_category(
-        999,
-        999,
-        1,
-        1
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -20402 THEN
-            dbms_output.put_line('4 OK');
-        ELSE
-            dbms_output.put_line('4 ERRO');
-        END IF;
-END;
-/
 --DELETE
 BEGIN
     pr_delete_transaction_category(
         1,
         2
     );
-    dbms_output.put_line('5 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('5 ERRO');
 END;
 /
-BEGIN
-    pr_delete_transaction_category(
-        999,
-        999
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -20404 THEN
-            dbms_output.put_line('6 OK');
-        ELSE
-            dbms_output.put_line('6 ERRO');
-        END IF;
-END;

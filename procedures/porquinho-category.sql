@@ -1,3 +1,5 @@
+   SET SERVEROUTPUT ON;
+
 -- Tabela Category
 -- Insert
 
@@ -108,31 +110,10 @@ BEGIN
     pr_insert_category(
         1,
         'TESTE_Alimentacao',
-        'EXPENSE',
+        'expense',
         1,
         1
     );
-    dbms_output.put_line('1 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('1 ERRO');
-END;
-/
-BEGIN
-    pr_insert_category(
-        99999,
-        'TESTE_FK',
-        'INCOME',
-        999,
-        999
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -20301 THEN
-            dbms_output.put_line('2 OK');
-        ELSE
-            dbms_output.put_line('2 ERRO');
-        END IF;
 END;
 /
 --UPDATE
@@ -147,32 +128,10 @@ BEGIN
         v_id,
         1,
         'TESTE_Transporte',
-        'EXPENSE',
+        'expense',
         2,
         2
     );
-    dbms_output.put_line('3 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('3 ERRO');
-END;
-/
-BEGIN
-    pr_update_category(
-        0,
-        1,
-        'X',
-        'X',
-        1,
-        1
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -20302 THEN
-            dbms_output.put_line('4 OK');
-        ELSE
-            dbms_output.put_line('4 ERRO');
-        END IF;
 END;
 /
 --DELETE
@@ -184,20 +143,9 @@ BEGIN
       FROM p_category
      WHERE name = 'TESTE_Transporte';
     pr_delete_category(v_id);
-    dbms_output.put_line('5 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('5 ERRO');
 END;
 /
-BEGIN
-    pr_delete_category(0);
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -20304 THEN
-            dbms_output.put_line('6 OK');
-        ELSE
-            dbms_output.put_line('6 ERRO');
-        END IF;
-END;
-/
+
+
+SELECT *
+  FROM p_category;

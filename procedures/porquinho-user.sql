@@ -1,3 +1,5 @@
+   SET SERVEROUTPUT ON;
+
 -- Tabela User
 -- Insert
 

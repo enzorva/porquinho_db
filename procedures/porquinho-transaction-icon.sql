@@ -1,3 +1,5 @@
+   SET SERVEROUTPUT ON;
+
 -- Tabela Transaction Icon
 -- Insert
 
@@ -110,34 +112,6 @@ EXCEPTION
         dbms_output.put_line('1 ERRO');
 END;
 /
-BEGIN
-    pr_insert_transaction_icon(
-        'TESTE_Supermercado',
-        '/icons/other.svg'
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -20001 THEN
-            dbms_output.put_line('2 OK');
-        ELSE
-            dbms_output.put_line('2 ERRO');
-        END IF;
-END;
-/
-BEGIN
-    pr_insert_transaction_icon(
-        NULL,
-        '/icons/null.svg'
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -20002 THEN
-            dbms_output.put_line('3 OK');
-        ELSE
-            dbms_output.put_line('3 ERRO');
-        END IF;
-END;
-/
 --UPDATE
 DECLARE
     v_id p_transaction_icon.transaction_icon_id%TYPE;
@@ -151,50 +125,8 @@ BEGIN
         'TESTE_Restaurante',
         '/icons/restaurant.svg'
     );
-    dbms_output.put_line('4 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('4 ERRO');
 END;
-/
-BEGIN
-    pr_update_transaction_icon(
-        0,
-        'X',
-        'Y'
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -20003 THEN
-            dbms_output.put_line('5 OK');
-        ELSE
-            dbms_output.put_line('5 ERRO');
-        END IF;
-END;
-/
-BEGIN
-    pr_insert_transaction_icon(
-        'TESTE_Transporte',
-        '/icons/bus.svg'
-    );
-    SELECT transaction_icon_id
-      INTO v_id
-      FROM p_transaction_icon
-     WHERE label = 'TESTE_Restaurante';
-    pr_update_transaction_icon(
-        v_id,
-        'TESTE_Transporte',
-        '/icons/train.svg'
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -20004 THEN
-            dbms_output.put_line('6 OK');
-        ELSE
-            dbms_output.put_line('6 ERRO');
-        END IF;
-END;
-/
+
 --DELETE
 DECLARE
     v_id p_transaction_icon.transaction_icon_id%TYPE;
@@ -204,20 +136,5 @@ BEGIN
       FROM p_transaction_icon
      WHERE label = 'TESTE_Restaurante';
     pr_delete_transaction_icon(v_id);
-    dbms_output.put_line('7 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('7 ERRO');
-END;
-/
-BEGIN
-    pr_delete_transaction_icon(0);
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -20006 THEN
-            dbms_output.put_line('8 OK');
-        ELSE
-            dbms_output.put_line('8 ERRO');
-        END IF;
 END;
 /

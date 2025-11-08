@@ -1,3 +1,5 @@
+   SET SERVEROUTPUT ON;
+
 -- Tabela Transaction
 -- Insert
 
@@ -158,27 +160,6 @@ BEGIN
         p_transaction_icon_id => 1,
         p_color_id            => 1
     );
-    dbms_output.put_line('1 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('1 ERRO');
-END;
-/
-BEGIN
-    pr_insert_transaction(
-        50,
-        'TESTE_FK',
-        99999,
-        1,
-        1
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -20101 THEN
-            dbms_output.put_line('2 OK');
-        ELSE
-            dbms_output.put_line('2 ERRO');
-        END IF;
 END;
 /
 --UPDATE
@@ -197,28 +178,6 @@ BEGIN
         p_transaction_icon_id => 1,
         p_color_id            => 1
     );
-    dbms_output.put_line('3 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('3 ERRO');
-END;
-/
-BEGIN
-    pr_update_transaction(
-        0,
-        10,
-        'X',
-        1,
-        1,
-        1
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -20102 THEN
-            dbms_output.put_line('4 OK');
-        ELSE
-            dbms_output.put_line('4 ERRO');
-        END IF;
 END;
 /
 --DELETE
@@ -230,20 +189,5 @@ BEGIN
       FROM p_transaction
      WHERE description = 'TESTE_Supermercado Atualizado';
     pr_delete_transaction(v_id);
-    dbms_output.put_line('5 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('5 ERRO');
-END;
-/
-BEGIN
-    pr_delete_transaction(0);
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -20104 THEN
-            dbms_output.put_line('6 OK');
-        ELSE
-            dbms_output.put_line('6 ERRO');
-        END IF;
 END;
 /

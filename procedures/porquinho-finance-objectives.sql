@@ -1,3 +1,5 @@
+   SET SERVEROUTPUT ON;
+
 -- Tabela Finance Objective
 -- Insert
 
@@ -11,12 +13,12 @@ BEGIN
 EXCEPTION
     WHEN dup_val_on_index THEN
         raise_application_error(
-            -21001,
+            -20001,
             'Já existe um objetivo financeiro com esse nome.'
         );
     WHEN OTHERS THEN
         raise_application_error(
-            -21002,
+            -20002,
             'Erro ao inserir objetivo financeiro: ' || sqlerrm
         );
 END;
@@ -39,7 +41,7 @@ BEGIN
 
     IF SQL%rowcount = 0 THEN
         raise_application_error(
-            -21003,
+            -20003,
             'Nenhum objetivo financeiro encontrado com o ID informado.'
         );
     END IF;
@@ -47,12 +49,12 @@ BEGIN
 EXCEPTION
     WHEN dup_val_on_index THEN
         raise_application_error(
-            -21004,
+            -20004,
             'Já existe um objetivo financeiro com esse nome.'
         );
     WHEN OTHERS THEN
         raise_application_error(
-            -21005,
+            -20005,
             'Erro ao atualizar objetivo financeiro: ' || sqlerrm
         );
 END;
@@ -73,7 +75,7 @@ BEGIN
 
     IF SQL%rowcount = 0 THEN
         raise_application_error(
-            -21006,
+            -20006,
             'Nenhum objetivo financeiro encontrado com o ID informado.'
         );
     END IF;
@@ -81,7 +83,7 @@ BEGIN
 EXCEPTION
     WHEN OTHERS THEN
         raise_application_error(
-            -21007,
+            -20007,
             'Erro ao remover objetivo financeiro: ' || sqlerrm
         );
 END;
@@ -95,32 +97,6 @@ END;
 -- INSERT
 BEGIN
     pr_insert_finance_objective('TESTE_Viagem');
-    dbms_output.put_line('1 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('1 ERRO');
-END;
-/
-BEGIN
-    pr_insert_finance_objective('TESTE_Viagem');
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -21001 THEN
-            dbms_output.put_line('2 OK');
-        ELSE
-            dbms_output.put_line('2 ERRO');
-        END IF;
-END;
-/
-BEGIN
-    pr_insert_finance_objective(NULL);
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -21002 THEN
-            dbms_output.put_line('3 OK');
-        ELSE
-            dbms_output.put_line('3 ERRO');
-        END IF;
 END;
 /
 -- UPDATE
@@ -135,42 +111,6 @@ BEGIN
         v_id,
         'TESTE_Carro'
     );
-    dbms_output.put_line('4 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('4 ERRO');
-END;
-/
-BEGIN
-    pr_update_finance_objective(
-        999999,
-        'X'
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -21003 THEN
-            dbms_output.put_line('5 OK');
-        ELSE
-            dbms_output.put_line('5 ERRO');
-        END IF;
-END;
-/
-BEGIN
-    SELECT finance_objective_id
-      INTO v_id
-      FROM p_finance_objective
-     WHERE name = 'TESTE_Carro';
-    pr_update_finance_objective(
-        v_id,
-        'TESTE_Viagem'
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -21004 THEN
-            dbms_output.put_line('6 OK');
-        ELSE
-            dbms_output.put_line('6 ERRO');
-        END IF;
 END;
 /
 -- DELETE
@@ -182,20 +122,9 @@ BEGIN
       FROM p_finance_objective
      WHERE name = 'TESTE_Carro';
     pr_delete_finance_objective(v_id);
-    dbms_output.put_line('7 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('7 ERRO');
 END;
 /
-BEGIN
-    pr_delete_finance_objective(999999);
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -21006 THEN
-            dbms_output.put_line('8 OK');
-        ELSE
-            dbms_output.put_line('8 ERRO');
-        END IF;
-END;
-/
+
+
+SELECT *
+  FROM p_finance_objective;

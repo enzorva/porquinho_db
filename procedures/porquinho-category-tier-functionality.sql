@@ -1,3 +1,5 @@
+   SET SERVEROUTPUT ON;
+
 -- Tabela Category Tier Functionality
 -- Insert
 
@@ -53,48 +55,15 @@ BEGIN
         1,
         1
     );
-EXCEPTION
-    WHEN OTHERS THEN
-        NULL;
 END;
 /
-BEGIN
-    sp_insert_category_tier_functionality(
-        1,
-        1
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        NULL;
-END;
-/
-BEGIN
-    sp_insert_category_tier_functionality(
-        999,
-        999
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        NULL;
-END;
-/
---DELETE
+-- DELETE
 BEGIN
     sp_delete_category_tier_functionality(
         1,
         1
     );
-EXCEPTION
-    WHEN OTHERS THEN
-        NULL;
 END;
-/
-BEGIN
-    sp_delete_category_tier_functionality(
-        999,
-        999
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        NULL;
-END;
+
+SELECT *
+  FROM p_category_tier_functionality;

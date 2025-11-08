@@ -1,3 +1,5 @@
+   SET SERVEROUTPUT ON;
+
 -- Tabela State
 -- Insert
 
@@ -7,21 +9,25 @@ CREATE OR REPLACE PROCEDURE pr_insert_state (
 ) AS
 BEGIN
     INSERT INTO p_state (
+        state_id,
         name,
         abbreviation
-    ) VALUES ( p_name,
+    ) VALUES ( seq_state.NEXTVAL,
+               p_name,
                p_abbreviation );
 
     COMMIT;
 EXCEPTION
     WHEN dup_val_on_index THEN
+        ROLLBACK;
         raise_application_error(
-            -23001,
+            -20001,
             'Já existe um estado com esse nome ou sigla.'
         );
     WHEN OTHERS THEN
+        ROLLBACK;
         raise_application_error(
-            -23002,
+            -20002,
             'Erro ao inserir estado: ' || sqlerrm
         );
 END;
@@ -44,7 +50,7 @@ BEGIN
 
     IF SQL%rowcount = 0 THEN
         raise_application_error(
-            -23003,
+            -20003,
             'Nenhum estado encontrado com o ID informado.'
         );
     END IF;
@@ -52,12 +58,12 @@ BEGIN
 EXCEPTION
     WHEN dup_val_on_index THEN
         raise_application_error(
-            -23004,
+            -20004,
             'Já existe um estado com esse nome ou sigla.'
         );
     WHEN OTHERS THEN
         raise_application_error(
-            -23005,
+            -20005,
             'Erro ao atualizar estado: ' || sqlerrm
         );
 END;
@@ -77,7 +83,7 @@ BEGIN
 
     IF SQL%rowcount = 0 THEN
         raise_application_error(
-            -23006,
+            -20006,
             'Nenhum estado encontrado com o ID informado.'
         );
     END IF;
@@ -85,7 +91,7 @@ BEGIN
 EXCEPTION
     WHEN OTHERS THEN
         raise_application_error(
-            -23007,
+            -20007,
             'Erro ao remover estado: ' || sqlerrm
         );
 END;
@@ -101,42 +107,9 @@ END;
 BEGIN
     pr_insert_state(
         'TESTE_São Paulo',
-        'SP'
+        'SS'
     );
-    dbms_output.put_line('1 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('1 ERRO');
 END;
-/
-BEGIN
-    pr_insert_state(
-        'TESTE_São Paulo',
-        'XX'
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -23001 THEN
-            dbms_output.put_line('2 OK');
-        ELSE
-            dbms_output.put_line('2 ERRO');
-        END IF;
-END;
-/
-BEGIN
-    pr_insert_state(
-        NULL,
-        'YY'
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -23002 THEN
-            dbms_output.put_line('3 OK');
-        ELSE
-            dbms_output.put_line('3 ERRO');
-        END IF;
-END;
-/
 --UPDATE
 DECLARE
     v_id p_state.state_id%TYPE;
@@ -148,50 +121,8 @@ BEGIN
     pr_update_state(
         v_id,
         'TESTE_Rio Janeiro',
-        'RJ'
+        'JJ'
     );
-    dbms_output.put_line('4 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('4 ERRO');
-END;
-/
-BEGIN
-    pr_update_state(
-        0,
-        'X',
-        'Y'
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -23003 THEN
-            dbms_output.put_line('5 OK');
-        ELSE
-            dbms_output.put_line('5 ERRO');
-        END IF;
-END;
-/
-BEGIN
-    pr_insert_state(
-        'TESTE_Minas Gerais',
-        'MG'
-    );
-    SELECT state_id
-      INTO v_id
-      FROM p_state
-     WHERE name = 'TESTE_Rio Janeiro';
-    pr_update_state(
-        v_id,
-        'TESTE_Minas Gerais',
-        'XX'
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -23004 THEN
-            dbms_output.put_line('6 OK');
-        ELSE
-            dbms_output.put_line('6 ERRO');
-        END IF;
 END;
 /
 --DELETE
@@ -203,20 +134,11 @@ BEGIN
       FROM p_state
      WHERE name = 'TESTE_Rio Janeiro';
     pr_delete_state(v_id);
-    dbms_output.put_line('7 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('7 ERRO');
 END;
 /
-BEGIN
-    pr_delete_state(0);
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -23006 THEN
-            dbms_output.put_line('8 OK');
-        ELSE
-            dbms_output.put_line('8 ERRO');
-        END IF;
-END;
-/
+
+
+SELECT *
+  FROM p_state;
+
+CREATE SEQUENCE seq_state START WITH 1 INCREMENT BY 1 NOCACHE NOMAXVALUE;

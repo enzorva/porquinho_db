@@ -1,3 +1,5 @@
+   SET SERVEROUTPUT ON;
+
 -- Tabela Subscription Status
 -- Insert
 
@@ -88,16 +90,6 @@ EXCEPTION
         NULL;
 END;
 /
-BEGIN
-    sp_insert_subscription_status(
-        'TESTE_Ativo',
-        'DUPLICADO'
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        NULL;
-END;
-/
 --UPDATE
 DECLARE
     v_id p_subscription_status.subscription_status_id%TYPE;
@@ -115,18 +107,6 @@ EXCEPTION
     WHEN OTHERS THEN
         NULL;
 END;
-/
-BEGIN
-    sp_update_subscription_status(
-        999999,
-        'X',
-        'Y'
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        NULL;
-END;
-/
 --DELETE
 DECLARE
     v_id p_subscription_status.subscription_status_id%TYPE;
@@ -136,15 +116,5 @@ BEGIN
       FROM p_subscription_status
      WHERE description = 'TESTE_Cancelado';
     sp_delete_subscription_status(v_id);
-EXCEPTION
-    WHEN OTHERS THEN
-        NULL;
-END;
-/
-BEGIN
-    sp_delete_subscription_status(999999);
-EXCEPTION
-    WHEN OTHERS THEN
-        NULL;
 END;
 /

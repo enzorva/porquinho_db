@@ -1,3 +1,5 @@
+   SET SERVEROUTPUT ON;
+
 -- Tabela Account Icon
 -- Insert
 
@@ -19,12 +21,12 @@ BEGIN
 EXCEPTION
     WHEN dup_val_on_index THEN
         raise_application_error(
-            -27010,
+            -20010,
             'Já existe um ícone com esse nome, label ou URL.'
         );
     WHEN OTHERS THEN
         raise_application_error(
-            -27011,
+            -20011,
             'Erro ao inserir ícone: ' || sqlerrm
         );
 END;
@@ -52,7 +54,7 @@ BEGIN
 
     IF v_exists = 0 THEN
         raise_application_error(
-            -27012,
+            -20012,
             'Ícone não encontrado para atualização.'
         );
     END IF;
@@ -66,7 +68,7 @@ BEGIN
 EXCEPTION
     WHEN dup_val_on_index THEN
         raise_application_error(
-            -27013,
+            -20013,
             'Já existe um ícone com esse nome, label ou URL.'
         );
 END;
@@ -84,7 +86,7 @@ BEGIN
 
     IF SQL%rowcount = 0 THEN
         raise_application_error(
-            -27015,
+            -20015,
             'Ícone não encontrado para remoção.'
         );
     END IF;
@@ -92,8 +94,42 @@ BEGIN
 EXCEPTION
     WHEN OTHERS THEN
         raise_application_error(
-            -27016,
+            -20016,
             'Erro ao remover ícone: ' || sqlerrm
         );
 END;
 /
+
+-- ======================================================================
+
+-- Teste
+
+-- INSERT
+BEGIN
+    pr_insert_account_icon(
+        p_name  => 'test_icon',
+        p_label => 'Test Icon Label',
+        p_url   => 'http://example.com/test.png'
+    );
+END;
+/
+
+-- UPDATE
+BEGIN
+    pr_update_account_icon(
+        p_account_icon_id => 11,
+        p_name            => 'updated_icon',
+        p_label           => 'Updated Icon Label',
+        p_url             => 'http://example.com/updated.png'
+    );
+END;
+/
+
+-- DELETE
+BEGIN
+    pr_delete_account_icon(11);
+END;
+/
+
+SELECT *
+  FROM p_account_icon;
