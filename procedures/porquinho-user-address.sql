@@ -21,12 +21,12 @@ BEGIN
 EXCEPTION
     WHEN dup_val_on_index THEN
         raise_application_error(
-            -26001,
+            -20001,
             'Este usuário já possui um endereço cadastrado.'
         );
     WHEN OTHERS THEN
         raise_application_error(
-            -26002,
+            -20002,
             'Erro ao inserir endereço do usuário: ' || sqlerrm
         );
 END;
@@ -53,7 +53,7 @@ BEGIN
 
     IF SQL%rowcount = 0 THEN
         raise_application_error(
-            -26003,
+            -20003,
             'Endereço não encontrado para atualização.'
         );
     END IF;
@@ -61,12 +61,12 @@ BEGIN
 EXCEPTION
     WHEN dup_val_on_index THEN
         raise_application_error(
-            -26004,
+            -20004,
             'Este usuário já possui outro endereço cadastrado.'
         );
     WHEN OTHERS THEN
         raise_application_error(
-            -26005,
+            -20005,
             'Erro ao atualizar endereço do usuário: ' || sqlerrm
         );
 END;
@@ -86,7 +86,7 @@ BEGIN
 
     IF SQL%rowcount = 0 THEN
         raise_application_error(
-            -26006,
+            -20006,
             'Endereço não encontrado para remoção.'
         );
     END IF;
@@ -94,7 +94,7 @@ BEGIN
 EXCEPTION
     WHEN OTHERS THEN
         raise_application_error(
-            -26007,
+            -20007,
             'Erro ao remover endereço do usuário: ' || sqlerrm
         );
 END;
@@ -108,9 +108,9 @@ END;
 --INSERT
 BEGIN
     pr_insert_user_address(
-        1,
-        'TESTE_01001-000',
-        1
+        11,
+        01041 - 609,
+        5
     );
 END;
 /
@@ -122,11 +122,11 @@ BEGIN
     SELECT user_address_id
       INTO v_id
       FROM p_user_address
-     WHERE cep = 'TESTE_01001-000';
+     WHERE cep = 01041 - 609;
     pr_update_user_address(
         v_id,
-        1,
-        'TESTE_20000-000',
+        11,
+        20000 - 000,
         2
     );
 END;
@@ -138,7 +138,7 @@ BEGIN
     SELECT user_address_id
       INTO v_id
       FROM p_user_address
-     WHERE cep = 'TESTE_20000-000';
+     WHERE cep = 20000 - 000;
     pr_delete_user_address(v_id);
 END;
 /
@@ -146,3 +146,7 @@ BEGIN
     pr_delete_user_address(0);
 END;
 /
+
+
+SELECT *
+  FROM p_user_address;

@@ -106,10 +106,11 @@ END;
 --INSERT
 BEGIN
     pr_insert_state(
-        'TESTE_São Paulo',
-        'SS'
+        'Acre',
+        'AC'
     );
 END;
+/
 --UPDATE
 DECLARE
     v_id p_state.state_id%TYPE;
@@ -117,7 +118,7 @@ BEGIN
     SELECT state_id
       INTO v_id
       FROM p_state
-     WHERE name = 'TESTE_São Paulo';
+     WHERE name = 'Acre';
     pr_update_state(
         v_id,
         'TESTE_Rio Janeiro',
@@ -140,5 +141,3 @@ END;
 
 SELECT *
   FROM p_state;
-
-CREATE SEQUENCE seq_state START WITH 1 INCREMENT BY 1 NOCACHE NOMAXVALUE;

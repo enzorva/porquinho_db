@@ -83,7 +83,7 @@ END;
 BEGIN
     sp_insert_subscription_status(
         'TESTE_Ativo',
-        'ACTIVE'
+        'TESTE_ACTIVE'
     );
 EXCEPTION
     WHEN OTHERS THEN
@@ -118,3 +118,6 @@ BEGIN
     sp_delete_subscription_status(v_id);
 END;
 /
+
+SELECT *
+  FROM p_subscription_status;

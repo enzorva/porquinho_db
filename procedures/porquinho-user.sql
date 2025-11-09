@@ -27,7 +27,7 @@ BEGIN
     );
     IF v_validation_result <> 'VÁLIDO' THEN
         raise_application_error(
-            -25000,
+            -20000,
             v_validation_result
         );
     END IF;
@@ -59,12 +59,12 @@ BEGIN
 EXCEPTION
     WHEN dup_val_on_index THEN
         raise_application_error(
-            -25001,
+            -20001,
             'Email ou telefone já está em uso.'
         );
     WHEN OTHERS THEN
         raise_application_error(
-            -25002,
+            -20002,
             'Erro ao inserir usuário: ' || sqlerrm
         );
 END;
@@ -99,7 +99,7 @@ BEGIN
     );
     IF v_validation_result <> 'VÁLIDO' THEN
         raise_application_error(
-            -25000,
+            -20000,
             v_validation_result
         );
     END IF;
@@ -120,7 +120,7 @@ BEGIN
 
     IF SQL%rowcount = 0 THEN
         raise_application_error(
-            -25003,
+            -20003,
             'Usuário não encontrado para atualização.'
         );
     END IF;
@@ -128,12 +128,12 @@ BEGIN
 EXCEPTION
     WHEN dup_val_on_index THEN
         raise_application_error(
-            -25004,
+            -20004,
             'Email ou telefone já está em uso.'
         );
     WHEN OTHERS THEN
         raise_application_error(
-            -25005,
+            -20005,
             'Erro ao atualizar usuário: ' || sqlerrm
         );
 END;
@@ -153,7 +153,7 @@ BEGIN
 
     IF SQL%rowcount = 0 THEN
         raise_application_error(
-            -25006,
+            -20006,
             'Usuário não encontrado para remoção.'
         );
     END IF;
@@ -161,7 +161,7 @@ BEGIN
 EXCEPTION
     WHEN OTHERS THEN
         raise_application_error(
-            -25007,
+            -20007,
             'Erro ao remover usuário: ' || sqlerrm
         );
 END;
@@ -181,7 +181,7 @@ BEGIN
         p_country_id           => 1,
         p_income               => 5000,
         p_finance_objective_id => 1,
-        p_gender               => 'F',
+        p_gender               => 'feminine',
         p_phone_number         => '11999999999',
         p_birthday             => DATE '1990-05-15',
         p_profile_picture_url  => 'http://foto/maria.jpg'
@@ -206,7 +206,7 @@ BEGIN
         p_country_id           => 1,
         p_income               => 6000,
         p_finance_objective_id => 2,
-        p_gender               => 'F',
+        p_gender               => 'feminine',
         p_phone_number         => '11888888888',
         p_birthday             => DATE '1990-05-15',
         p_profile_picture_url  => 'http://foto/maria2.jpg'
@@ -225,3 +225,7 @@ BEGIN
     pr_delete_user(v_id);
 END;
 /
+
+
+SELECT *
+  FROM p_user;

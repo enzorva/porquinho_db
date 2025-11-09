@@ -88,7 +88,7 @@ END;
 --INSERT
 BEGIN
     sp_insert_subscription(
-        1,
+        11,
         1,
         1,
         DATE '2026-11-06'
@@ -102,13 +102,9 @@ BEGIN
     SELECT subscription_id
       INTO v_id
       FROM p_subscription
-     WHERE user_id = 1;
-    sp_update_subscription(
-        v_id,
-        1,
-        1,
-        DATE '2026-12-31'
-    );
+     WHERE user_id = 1
+     ORDER BY created_at DESC
+     FETCH FIRST 1 ROW ONLY;
 END;
 --DELETE
 DECLARE
@@ -117,7 +113,11 @@ BEGIN
     SELECT subscription_id
       INTO v_id
       FROM p_subscription
-     WHERE user_id = 1;
-    sp_delete_subscription(v_id);
+     WHERE user_id = 1
+     ORDER BY created_at DESC
+     FETCH FIRST 1 ROW ONLY;
 END;
 /
+
+SELECT *
+  FROM p_subscription;

@@ -145,3 +145,8 @@ BEGIN
     pr_delete_wallet(v_id);
 END;
 /
+
+
+
+SELECT *
+  FROM p_wallet;

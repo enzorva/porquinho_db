@@ -119,3 +119,6 @@ BEGIN
      WHERE name = 'TESTE_Premium';
     sp_delete_subscription_tier(v_id);
 END;
+
+SELECT *
+  FROM p_subscription_tier;

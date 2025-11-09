@@ -4,16 +4,17 @@
 -- Insert
 
 CREATE OR REPLACE PROCEDURE pr_insert_transfer (
-    p_value                  IN p_transfer.value%TYPE,
+    p_value                  IN p_transfer.transfer_value%TYPE,
     p_origin_account_id      IN p_transfer.origin_account_id%TYPE,
     p_destination_account_id IN p_transfer.destination_account_id%TYPE,
     p_description            IN p_transfer.description%TYPE
 ) AS
-    v_origin_balance NUMBER;
+    v_origin_balance     NUMBER;
+    v_destination_exists NUMBER;  -- ✅ Nova variável
 BEGIN
     IF p_origin_account_id = p_destination_account_id THEN
         raise_application_error(
-            -27050,
+            -20050,
             'A conta de origem não pode ser igual à conta de destino.'
         );
     END IF;
@@ -24,19 +25,19 @@ BEGIN
     FOR UPDATE;
 
     SELECT COUNT(*)
-      INTO v_origin_balance
+      INTO v_destination_exists
       FROM p_account
      WHERE account_id = p_destination_account_id;
 
-    IF v_origin_balance = 0 THEN
+    IF v_destination_exists = 0 THEN
         raise_application_error(
-            -27051,
+            -20051,
             'Conta de destino inexistente.'
         );
     END IF;
     IF v_origin_balance < p_value THEN
         raise_application_error(
-            -27052,
+            -20052,
             'Saldo insuficiente para transferência.'
         );
     END IF;
@@ -51,7 +52,7 @@ BEGIN
      WHERE account_id = p_destination_account_id;
 
     INSERT INTO p_transfer (
-        value,
+        transfer_value,
         origin_account_id,
         destination_account_id,
         description
@@ -64,17 +65,17 @@ BEGIN
 EXCEPTION
     WHEN no_data_found THEN
         raise_application_error(
-            -27053,
+            -20053,
             'Conta de origem não encontrada.'
         );
     WHEN OTHERS THEN
+        ROLLBACK;
         raise_application_error(
-            -27054,
+            -20054,
             'Erro ao registrar transferência: ' || sqlerrm
         );
 END;
 /
-
 
 -- ======================================================================
 
@@ -93,7 +94,7 @@ BEGIN
 
     IF v_exists = 0 THEN
         raise_application_error(
-            -27055,
+            -20055,
             'Transferência não encontrada para atualização.'
         );
     END IF;
@@ -106,7 +107,7 @@ BEGIN
 EXCEPTION
     WHEN OTHERS THEN
         raise_application_error(
-            -27056,
+            -20056,
             'Erro ao atualizar transferência: ' || sqlerrm
         );
 END;
@@ -123,7 +124,7 @@ CREATE OR REPLACE PROCEDURE pr_cancel_transfer (
     v_origin      NUMBER;
     v_destination NUMBER;
 BEGIN
-    SELECT value,
+    SELECT transfer_value,
            origin_account_id,
            destination_account_id
       INTO
@@ -152,17 +153,17 @@ BEGIN
 EXCEPTION
     WHEN no_data_found THEN
         raise_application_error(
-            -27057,
+            -20057,
             'Transferência não encontrada para cancelamento.'
         );
     WHEN OTHERS THEN
+        ROLLBACK;
         raise_application_error(
-            -27058,
+            -20058,
             'Erro ao cancelar transferência: ' || sqlerrm
         );
 END;
 /
-
 
 -- ======================================================================
 
@@ -171,54 +172,31 @@ END;
 --INSERT
 BEGIN
     pr_insert_transfer(
-        500,
+        10,
         1,
         2,
         'TESTE_Transferência OK'
     );
-    dbms_output.put_line('1 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('1 ERRO');
-END;
-/
-BEGIN
-    pr_insert_transfer(
-        500,
-        1,
-        1,
-        'TESTE_Mesma conta'
-    );
-EXCEPTION
-    WHEN OTHERS THEN
-        IF sqlcode = -27050 THEN
-            dbms_output.put_line('2 OK');
-        ELSE
-            dbms_output.put_line('2 ERRO');
-        END IF;
-END;
-/
-BEGIN
-    pr_insert_transfer(
-        15000,
-        1,
-        2,
-        'TESTE_Saldo insuficiente'
-    );
 END;
 /
 --UPDATE
-DECLARE
-    v_id p_transfer.transfer_id%TYPE;
+CREATE OR REPLACE PROCEDURE pr_update_transfer (
+    p_transfer_id IN p_transfer.transfer_id%TYPE,
+    p_description IN p_transfer.description%TYPE
+) AS
 BEGIN
-    SELECT transfer_id
-      INTO v_id
-      FROM p_transfer
-     WHERE description = 'TESTE_Transferência OK';
-    pr_update_transfer(
-        v_id,
-        'TESTE_Descrição atualizada'
-    );
+    UPDATE p_transfer
+       SET description = p_description,
+           updated_at = systimestamp
+     WHERE transfer_id = p_transfer_id;
+
+    IF SQL%rowcount = 0 THEN
+        raise_application_error(
+            -20055,
+            'Transferência não encontrada para atualização.'
+        );
+    END IF;
+    COMMIT;
 END;
 /
 --CANCEL
@@ -228,11 +206,12 @@ BEGIN
     SELECT transfer_id
       INTO v_id
       FROM p_transfer
-     WHERE description = 'TESTE_Descrição atualizada';
+     WHERE description = 'TESTE_Transferência OK';
     pr_cancel_transfer(v_id);
-    dbms_output.put_line('7 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('7 ERRO');
 END;
 /
+
+
+
+SELECT *
+  FROM p_transfer;

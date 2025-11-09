@@ -4,7 +4,7 @@
 -- Insert
 
 CREATE OR REPLACE PROCEDURE pr_insert_transaction (
-    p_value               IN p_transaction.value%TYPE,
+    p_transaction_value   IN p_transaction.transaction_value%TYPE,
     p_description         IN p_transaction.description%TYPE,
     p_transaction_date    IN p_transaction.transaction_date%TYPE DEFAULT sysdate,
     p_has_occurred        IN p_transaction.has_occurred%TYPE DEFAULT 1,
@@ -18,7 +18,7 @@ CREATE OR REPLACE PROCEDURE pr_insert_transaction (
 BEGIN
     v_validation_result := fn_validate_transaction(
         p_account_id,
-        p_value,
+        p_transaction_value,
         p_transaction_icon_id,
         p_color_id
     );
@@ -29,7 +29,7 @@ BEGIN
         );
     END IF;
     INSERT INTO p_transaction (
-        value,
+        transaction_value,
         description,
         transaction_date,
         has_occurred,
@@ -38,7 +38,7 @@ BEGIN
         account_id,
         transaction_icon_id,
         color_id
-    ) VALUES ( p_value,
+    ) VALUES ( p_transaction_value,
                p_description,
                p_transaction_date,
                p_has_occurred,
@@ -56,7 +56,7 @@ EXCEPTION
             'Erro ao inserir transação: ' || sqlerrm
         );
 END;
-
+/
 
 -- ======================================================================
 
@@ -64,7 +64,7 @@ END;
 
 CREATE OR REPLACE PROCEDURE pr_update_transaction (
     p_transaction_id      IN p_transaction.transaction_id%TYPE,
-    p_value               IN p_transaction.value%TYPE,
+    p_transaction_value   IN p_transaction.transaction_value%TYPE,
     p_description         IN p_transaction.description%TYPE,
     p_transaction_date    IN p_transaction.transaction_date%TYPE,
     p_has_occurred        IN p_transaction.has_occurred%TYPE,
@@ -78,7 +78,7 @@ CREATE OR REPLACE PROCEDURE pr_update_transaction (
 BEGIN
     v_validation_result := fn_validate_transaction(
         p_account_id,
-        p_value,
+        p_transaction_value,
         p_transaction_icon_id,
         p_color_id
     );
@@ -89,7 +89,7 @@ BEGIN
         );
     END IF;
     UPDATE p_transaction
-       SET value = p_value,
+       SET transaction_value = p_transaction_value,
            description = p_description,
            transaction_date = p_transaction_date,
            has_occurred = p_has_occurred,
@@ -115,7 +115,7 @@ EXCEPTION
             'Erro ao atualizar transação: ' || sqlerrm
         );
 END;
-
+/
 
 -- ======================================================================
 
@@ -144,9 +144,6 @@ EXCEPTION
 END;
 /
 
-
-
-
 -- ======================================================================
 
 -- Teste
@@ -154,14 +151,19 @@ END;
 --INSERT
 BEGIN
     pr_insert_transaction(
-        p_value               => 89.90,
+        p_transaction_value   => 89.90,
         p_description         => 'TESTE_Supermercado',
+        p_transaction_date    => sysdate,
+        p_has_occurred        => 1,
+        p_is_auto_confirmed   => 0,
+        p_observation         => NULL,
         p_account_id          => 1,
         p_transaction_icon_id => 1,
         p_color_id            => 1
     );
 END;
 /
+
 --UPDATE
 DECLARE
     v_id p_transaction.transaction_id%TYPE;
@@ -172,14 +174,19 @@ BEGIN
      WHERE description = 'TESTE_Supermercado';
     pr_update_transaction(
         p_transaction_id      => v_id,
-        p_value               => 95.50,
+        p_transaction_value   => 95.50,
         p_description         => 'TESTE_Supermercado Atualizado',
+        p_transaction_date    => sysdate,
+        p_has_occurred        => 1,
+        p_is_auto_confirmed   => 0,
+        p_observation         => NULL,
         p_account_id          => 1,
         p_transaction_icon_id => 1,
         p_color_id            => 1
     );
 END;
 /
+
 --DELETE
 DECLARE
     v_id p_transaction.transaction_id%TYPE;
@@ -191,3 +198,6 @@ BEGIN
     pr_delete_transaction(v_id);
 END;
 /
+
+SELECT *
+  FROM p_transaction;

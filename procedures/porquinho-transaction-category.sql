@@ -95,8 +95,8 @@ END;
 --INSERT
 BEGIN
     pr_insert_transaction_category(
-        1,
-        1
+        21,
+        10
     );
 END;
 /
@@ -108,10 +108,6 @@ BEGIN
         1,
         2
     );
-    dbms_output.put_line('3 OK');
-EXCEPTION
-    WHEN OTHERS THEN
-        dbms_output.put_line('3 ERRO');
 END;
 /
 --DELETE
@@ -122,3 +118,7 @@ BEGIN
     );
 END;
 /
+
+
+SELECT *
+  FROM p_transaction_category;

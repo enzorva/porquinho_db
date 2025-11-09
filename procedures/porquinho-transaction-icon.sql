@@ -138,3 +138,7 @@ BEGIN
     pr_delete_transaction_icon(v_id);
 END;
 /
+
+
+SELECT *
+  FROM p_transaction_icon;
